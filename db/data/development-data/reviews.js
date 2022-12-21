@@ -99,7 +99,7 @@ module.exports = [
     designer: 'Klaus Teuber',
     owner: 'tickle122',
     review_img_url:
-      'https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg',
+      'https://images.pexels.com/photos/1153929/pexels-photo-1153929.jpeg?w=700&h=700',
     review_body:
       'You have stumbled across an uncharted island rich in natural resources, but you are not alone; other adventurers have come ashore too, and the race to settle the island of Catan has begun! Whether you exert military force, build a road to rival the Great Wall, trade goods with ships from the outside world, or some combination of all three, the aim is the same: to dominate the island. Will you prevail? Proceed strategically, trade wisely, and may the odds be in favour.',
     category: 'strategy',
