@@ -22,7 +22,7 @@
   "homepage": "https://github.com/northcoders/be-nc-games#readme",
   "dependencies": {
     "dotenv": "^16.0.0",
-    "pg": "^8.7.3",
+    "pg": "^8.7.3"
   },
   "devDependencies": {
     "husky": "^8.0.2",
