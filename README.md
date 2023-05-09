@@ -20,7 +20,7 @@ To set up the database for local development, follow these steps:
 PGDATABASE=mydatabase
 ```
 
-Note: Replace "mydatabase" with your own database connection details.
+Note: This mydatabase name should be the same as the db names in db/setup.sql!!
 
 3. Save the file and close it.
 
@@ -36,6 +36,6 @@ To set up the database for testing, follow these steps:
 PGDATABASE=mydatabase_text
 ```
 
-Note: Replace "mydatabase_text" with your own test database connection details.
+Note: This mydatabase name should be the same as the db names in db/setup.sql!!
 
 3. Save the file and close it.
