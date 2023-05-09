@@ -32,10 +32,20 @@ describe("/api/categories", () => {
         category.forEach((eachCat) => {
           expect(eachCat.hasOwnProperty("slug")).toBe(true);
           expect(eachCat.hasOwnProperty("description")).toBe(true);
+          expect(typeof eachCat.slug).toBe("string");
+          expect(typeof eachCat.description).toBe("string");
         });
       });
   });
-  test("GET - status: 400 - invalid input throw error", () => {
-    return request(app).get("/api/not-a-route").expect(404);
+});
+
+describe("Invalid endpoint", () => {
+  test("GET - status: 404 - invalid input throw error", () => {
+    return request(app)
+      .get("/api/not-a-route")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid endpoint!");
+      });
   });
 });
