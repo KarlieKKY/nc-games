@@ -37,6 +37,13 @@ describe("/api/categories", () => {
         });
       });
   });
+  // test.only("GET - status: 500 - will give 500 when there is a problem with the database", () => {
+  //   return request(app)
+  //     .get("/api/categories")
+  //     .then((response) => {
+  //       expect(response.body.msg).toBe("Server Error...");
+  //     });
+  // });
 });
 
 describe("Invalid endpoint", () => {
