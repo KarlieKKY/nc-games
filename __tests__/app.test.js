@@ -101,7 +101,6 @@ describe("/api", () => {
       .expect(200)
       .then(({ body }) => {
         for (const endpoint in body.endpoints) {
-          console.log(endpoint);
           expect(body.endpoints[endpoint].hasOwnProperty("description")).toBe(
             true
           );
