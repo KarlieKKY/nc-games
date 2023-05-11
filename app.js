@@ -1,9 +1,13 @@
 const express = require("express");
-const { getCategories } = require("./controllers/categories.controllers");
+const {
+  getCategories,
+  getEndpoints,
+} = require("./controllers/categories.controllers");
 
 const app = express();
 
 app.get("/api/categories", getCategories);
+app.get("/api", getEndpoints);
 
 app.use((err, req, res, next) => {
   res.status(500).send({ msg: "Server Error..." });
