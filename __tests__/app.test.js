@@ -22,24 +22,6 @@ beforeEach(() => {
   });
 });
 
-describe("/api/categories", () => {
-  test("GET - status: 200 - responds with an array of category objects with corresponding properties", () => {
-    return request(app)
-      .get("/api/categories")
-      .expect(200)
-      .then((response) => {
-        const category = response.body.category;
-        expect(category.length).toBe(4);
-        category.forEach((eachCat) => {
-          expect(eachCat.hasOwnProperty("slug")).toBe(true);
-          expect(eachCat.hasOwnProperty("description")).toBe(true);
-          expect(typeof eachCat.slug).toBe("string");
-          expect(typeof eachCat.description).toBe("string");
-        });
-      });
-  });
-});
-
 describe("/api", () => {
   const readFile = fs
     .readFile(`${__dirname}/../endpoints.json`, "utf-8")
@@ -72,6 +54,24 @@ describe("/api", () => {
   });
 });
 
+describe("/api/categories", () => {
+  test("GET - status: 200 - responds with an array of category objects with corresponding properties", () => {
+    return request(app)
+      .get("/api/categories")
+      .expect(200)
+      .then((response) => {
+        const category = response.body.category;
+        expect(category.length).toBe(4);
+        category.forEach((eachCat) => {
+          expect(eachCat.hasOwnProperty("slug")).toBe(true);
+          expect(eachCat.hasOwnProperty("description")).toBe(true);
+          expect(typeof eachCat.slug).toBe("string");
+          expect(typeof eachCat.description).toBe("string");
+        });
+      });
+  });
+});
+
 describe("/api/reviews/:review_id", () => {
   test("GET - status: 200 - returns an object regarding to the review id", () => {
     return request(app)
@@ -90,23 +90,23 @@ describe("/api/reviews/:review_id", () => {
           created_at: "2021-01-18T10:00:20.514Z",
           votes: 1,
         };
-        expect(body.reviewId[0]).toEqual(result);
+        expect(body.review).toEqual(result);
       });
   });
-  test("GET - status: 404 - returns a message when review id is invalid integer", () => {
-    return request(app)
-      .get("/api/reviews/99999999")
-      .expect(404)
-      .then((res) => {
-        expect(res.body).toEqual({ msg: "Review Id not found!" });
-      });
-  });
-  test("GET - status : 400 - return a message when review is not a integer", () => {
+  test("GET - status : 400 - return a message when review is not well formed", () => {
     return request(app)
       .get("/api/reviews/nonsense")
       .expect(400)
       .then((res) => {
         expect(res.body).toEqual({ msg: "Bad request!" });
+      });
+  });
+  test("GET - status: 404 - returns a message when the review id is valid but non-existent in the databse", () => {
+    return request(app)
+      .get("/api/reviews/99999999")
+      .expect(404)
+      .then((res) => {
+        expect(res.body).toEqual({ msg: "Review Id not found!" });
       });
   });
 });

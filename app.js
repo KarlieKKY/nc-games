@@ -7,8 +7,8 @@ const {
 
 const app = express();
 
-app.get("/api/categories", getCategories);
 app.get("/api", getEndpoints);
+app.get("/api/categories", getCategories);
 app.get("/api/reviews/:review_id", getReviewId);
 
 app.use((err, req, res, next) => {

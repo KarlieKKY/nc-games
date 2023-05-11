@@ -26,8 +26,8 @@ exports.getReviewId = (req, res, next) => {
   const { review_id } = req.params;
 
   fetchReviewId(review_id)
-    .then((reviewId) => {
-      res.status(200).send({ reviewId });
+    .then((review) => {
+      res.status(200).send({ review: review[0] });
     })
     .catch(next);
 };
