@@ -15,3 +15,19 @@ exports.fetchEndpoints = () => {
       return parsedEndpoints;
     });
 };
+
+exports.fetchReviewId = (id) => {
+  if (isNaN(id)) {
+    return Promise.reject({ status: 400, msg: "Bad request!" });
+  }
+
+  const queryStr = `SELECT * FROM reviews WHERE review_id = $1`;
+
+  return db.query(queryStr, [id]).then((result) => {
+    if (result.rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "Review Id not found!" });
+    } else {
+      return result.rows;
+    }
+  });
+};
