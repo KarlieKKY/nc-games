@@ -8,6 +8,7 @@ const {
   userData,
 } = require("../db/data/test-data/index");
 const seed = require("../db/seeds/seed");
+const fs = require("fs/promises");
 
 afterAll(() => {
   db.end();
@@ -44,6 +45,38 @@ describe("/api/categories", () => {
   //       expect(response.body.msg).toBe("Server Error...");
   //     });
   // });
+});
+
+describe("/api", () => {
+  const readFile = fs
+    .readFile(`${__dirname}/../endpoints.json`, "utf-8")
+    .then((result) => {
+      return JSON.parse(result);
+    });
+  test("GET - status: 200 - returns an object of all enpoints", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ body }) => {
+        readFile.then((result) => {
+          expect(body.endpoints).toEqual(result);
+          expect(typeof body.endpoints).toBe("object");
+          expect(Array.isArray(body.endpoints)).toBe(false);
+        });
+      });
+  });
+  test("Each endpoint should have a description property", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ body }) => {
+        for (const endpoint in body.endpoints) {
+          expect(body.endpoints[endpoint].hasOwnProperty("description")).toBe(
+            true
+          );
+        }
+      });
+  });
 });
 
 describe("Invalid endpoint", () => {
