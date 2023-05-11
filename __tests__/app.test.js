@@ -93,7 +93,7 @@ describe("/api/reviews/:review_id", () => {
         expect(body.reviewId[0]).toEqual(result);
       });
   });
-  test("GET - status: 500 - returns a message when review id is invalid integer", () => {
+  test("GET - status: 404 - returns a message when review id is invalid integer", () => {
     return request(app)
       .get("/api/reviews/99999999")
       .expect(404)
