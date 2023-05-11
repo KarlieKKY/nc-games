@@ -79,6 +79,41 @@ describe("/api", () => {
   });
 });
 
+describe("/api/reviews/:review_id", () => {
+  test("GET - status: 200 - returns an object of review id has corresponding properties", () => {
+    return request(app)
+      .get("/api/reviews/1")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.reviewId[0].hasOwnProperty("review_id")).toBe(true);
+        expect(body.reviewId[0].hasOwnProperty("title")).toBe(true);
+        expect(body.reviewId[0].hasOwnProperty("review_body")).toBe(true);
+        expect(body.reviewId[0].hasOwnProperty("designer")).toBe(true);
+        expect(body.reviewId[0].hasOwnProperty("review_img_url")).toBe(true);
+        expect(body.reviewId[0].hasOwnProperty("votes")).toBe(true);
+        expect(body.reviewId[0].hasOwnProperty("category")).toBe(true);
+        expect(body.reviewId[0].hasOwnProperty("owner")).toBe(true);
+        expect(body.reviewId[0].hasOwnProperty("created_at")).toBe(true);
+      });
+  });
+  test("GET - status: 500 - returns a message when review id is invalid integer", () => {
+    return request(app)
+      .get("/api/reviews/-1")
+      .expect(500)
+      .then((res) => {
+        expect(res.body).toEqual({ msg: "Server Error..." });
+      });
+  });
+  test("GET - status : 400 - return a message when review is not a integer", () => {
+    return request(app)
+      .get("/api/reviews/nonsense")
+      .expect(400)
+      .then((res) => {
+        expect(res.body).toEqual({ msg: "Bad request!" });
+      });
+  });
+});
+
 describe("Invalid endpoint", () => {
   test("GET - status: 404 - invalid input throw error", () => {
     return request(app)
