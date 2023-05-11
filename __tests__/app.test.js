@@ -38,13 +38,6 @@ describe("/api/categories", () => {
         });
       });
   });
-  // test.only("GET - status: 500 - will give 500 when there is a problem with the database", () => {
-  //   return request(app)
-  //     .get("/api/categories")
-  //     .then((response) => {
-  //       expect(response.body.msg).toBe("Server Error...");
-  //     });
-  // });
 });
 
 describe("/api", () => {
@@ -80,28 +73,32 @@ describe("/api", () => {
 });
 
 describe("/api/reviews/:review_id", () => {
-  test("GET - status: 200 - returns an object of review id has corresponding properties", () => {
+  test("GET - status: 200 - returns an object regarding to the review id", () => {
     return request(app)
       .get("/api/reviews/1")
       .expect(200)
       .then(({ body }) => {
-        expect(body.reviewId[0].hasOwnProperty("review_id")).toBe(true);
-        expect(body.reviewId[0].hasOwnProperty("title")).toBe(true);
-        expect(body.reviewId[0].hasOwnProperty("review_body")).toBe(true);
-        expect(body.reviewId[0].hasOwnProperty("designer")).toBe(true);
-        expect(body.reviewId[0].hasOwnProperty("review_img_url")).toBe(true);
-        expect(body.reviewId[0].hasOwnProperty("votes")).toBe(true);
-        expect(body.reviewId[0].hasOwnProperty("category")).toBe(true);
-        expect(body.reviewId[0].hasOwnProperty("owner")).toBe(true);
-        expect(body.reviewId[0].hasOwnProperty("created_at")).toBe(true);
+        const result = {
+          review_id: 1,
+          title: "Agricola",
+          designer: "Uwe Rosenberg",
+          owner: "mallionaire",
+          review_img_url:
+            "https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700",
+          review_body: "Farmyard fun!",
+          category: "euro game",
+          created_at: "2021-01-18T10:00:20.514Z",
+          votes: 1,
+        };
+        expect(body.reviewId[0]).toEqual(result);
       });
   });
   test("GET - status: 500 - returns a message when review id is invalid integer", () => {
     return request(app)
-      .get("/api/reviews/-1")
-      .expect(500)
+      .get("/api/reviews/99999999")
+      .expect(404)
       .then((res) => {
-        expect(res.body).toEqual({ msg: "Server Error..." });
+        expect(res.body).toEqual({ msg: "Review Id not found!" });
       });
   });
   test("GET - status : 400 - return a message when review is not a integer", () => {

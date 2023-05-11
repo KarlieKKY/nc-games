@@ -25,7 +25,7 @@ exports.fetchReviewId = (id) => {
 
   return db.query(queryStr, [id]).then((result) => {
     if (result.rows.length === 0) {
-      return Promise.reject({ status: 500, msg: "Server Error..." });
+      return Promise.reject({ status: 404, msg: "Review Id not found!" });
     } else {
       return result.rows;
     }
