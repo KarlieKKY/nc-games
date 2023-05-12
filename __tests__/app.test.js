@@ -72,6 +72,38 @@ describe("/api/categories", () => {
   });
 });
 
+describe("/api/reviews", () => {
+  test("GET - status: 200 - returns a reviews array of review object, each of which should have the corresponding properties", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body }) => {
+        body.reviews.forEach((review) => {
+          expect(typeof review.review_id).toBe("number");
+          expect(typeof review.owner).toBe("string");
+          expect(typeof review.title).toBe("string");
+          expect(typeof review.category).toBe("string");
+          expect(typeof review.review_img_url).toBe("string");
+          expect(typeof review.created_at).toBe("string");
+          expect(typeof review.votes).toBe("number");
+          expect(typeof review.designer).toBe("string");
+          expect(typeof review.comment_count).toBe("string");
+          expect(review.hasOwnProperty("review_body")).toBe(false);
+        });
+      });
+  });
+  test("GET - status: 200 - should sorts by date in descending order", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.reviews).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
+});
+
 describe("/api/reviews/:review_id", () => {
   test("GET - status: 200 - returns an object regarding to the review id", () => {
     return request(app)

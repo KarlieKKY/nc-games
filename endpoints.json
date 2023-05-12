@@ -31,5 +31,8 @@
         }
       ]
     }
+  },
+  "GET /api/reviews/:review_id": {
+    "description": "serves an  review object with corresponding well formatted review_id"
   }
 }
