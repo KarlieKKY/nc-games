@@ -2,6 +2,7 @@ const {
   fetchCategories,
   fetchEndpoints,
   fetchReviewId,
+  fetchReviews,
 } = require("../models/categories.models");
 
 exports.getCategories = (req, res, next) => {
@@ -28,6 +29,14 @@ exports.getReviewId = (req, res, next) => {
   fetchReviewId(review_id)
     .then((review) => {
       res.status(200).send({ review: review[0] });
+    })
+    .catch(next);
+};
+
+exports.getReviews = (req, res, next) => {
+  fetchReviews()
+    .then((review) => {
+      res.status(200).send({ reviews: review });
     })
     .catch(next);
 };

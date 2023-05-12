@@ -31,3 +31,23 @@ exports.fetchReviewId = (id) => {
     }
   });
 };
+
+exports.fetchReviews = () => {
+  const queryStr = `
+  SELECT reviews.* , count(comments.comment_id) AS comment_count 
+  FROM reviews 
+  JOIN comments 
+  ON reviews.review_id = comments.review_id
+  GROUP BY reviews.review_id
+  ORDER BY created_at DESC;
+  `;
+
+  return db.query(queryStr).then((result) => {
+    const formattedData = result.rows.map((obj) => {
+      delete obj.review_body;
+      return obj;
+    });
+
+    return formattedData;
+  });
+};
