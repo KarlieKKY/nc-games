@@ -78,6 +78,7 @@ describe("/api/reviews", () => {
       .get("/api/reviews")
       .expect(200)
       .then(({ body }) => {
+        expect(body.reviews.length).toBe(2);
         body.reviews.forEach((review) => {
           expect(typeof review.review_id).toBe("number");
           expect(typeof review.owner).toBe("string");
