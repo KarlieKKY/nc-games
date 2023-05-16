@@ -4,6 +4,7 @@ const {
   getEndpoints,
   getReviewId,
   getReviews,
+  getReviewidComments,
 } = require("./controllers/categories.controllers");
 
 const app = express();
@@ -12,6 +13,7 @@ app.get("/api", getEndpoints);
 app.get("/api/categories", getCategories);
 app.get("/api/reviews", getReviews);
 app.get("/api/reviews/:review_id", getReviewId);
+app.get("/api/reviews/:review_id/comments", getReviewidComments);
 
 app.use((err, req, res, next) => {
   res.status(err.status).send({ msg: err.msg });
