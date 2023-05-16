@@ -144,6 +144,84 @@ describe("/api/reviews/:review_id", () => {
   });
 });
 
+describe("/api/reviews/:review_id/comments", () => {
+  test("GET - status: 200 - returns an array of comments for the given review_id", () => {
+    return request(app)
+      .get("/api/reviews/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const result = [
+          {
+            comment_id: 5,
+            body: "Now this is a story all about how, board games turned my life upside down",
+            review_id: 2,
+            author: "mallionaire",
+            votes: 13,
+            created_at: "2021-01-18T10:24:05.410Z",
+          },
+          {
+            comment_id: 1,
+            body: "I loved this game too!",
+            review_id: 2,
+            author: "bainesface",
+            votes: 16,
+            created_at: "2017-11-22T12:43:33.389Z",
+          },
+          {
+            comment_id: 4,
+            body: "EPIC board game!",
+            review_id: 2,
+            author: "bainesface",
+            votes: 16,
+            created_at: "2017-11-22T12:36:03.389Z",
+          },
+        ];
+        expect(body.comments).toEqual(result);
+      });
+  });
+  test("GET - status: 200 - each comment should has corresponding properties", () => {
+    return request(app)
+      .get("/api/reviews/3/comments")
+      .expect(200)
+      .then(({ body }) => {
+        body.comments.forEach((comment) => {
+          expect(typeof comment.comment_id).toBe("number");
+          expect(typeof comment.votes).toBe("number");
+          expect(typeof comment.created_at).toBe("string");
+          expect(typeof comment.author).toBe("string");
+          expect(typeof comment.body).toBe("string");
+          expect(typeof comment.review_id).toBe("number");
+        });
+      });
+  });
+  test("GET - status: 200 - should show the most recent comments first", () => {
+    return request(app)
+      .get("/api/reviews/3/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
+  test("GET - status : 400 - return a message when review is not well formed", () => {
+    return request(app)
+      .get("/api/reviews/nonsense/comments")
+      .expect(400)
+      .then((res) => {
+        expect(res.body).toEqual({ msg: "Bad request!" });
+      });
+  });
+  test("GET - status: 404 - returns a message when the review id is valid but non-existent in the databse", () => {
+    return request(app)
+      .get("/api/reviews/99999999/comments")
+      .expect(404)
+      .then((res) => {
+        expect(res.body).toEqual({ msg: "Review Id not found!" });
+      });
+  });
+});
+
 describe("Invalid endpoint", () => {
   test("GET - status: 404 - invalid input throw error", () => {
     return request(app)

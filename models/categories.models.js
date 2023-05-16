@@ -51,3 +51,25 @@ exports.fetchReviews = () => {
     return formattedData;
   });
 };
+
+exports.fetchReviewidComments = (reviewId) => {
+  if (isNaN(reviewId)) {
+    return Promise.reject({ status: 400, msg: "Bad request!" });
+  }
+  const queryStr = `
+  SELECT comments.*
+  FROM comments
+  JOIN reviews
+  ON reviews.review_id = comments.review_id
+  WHERE comments.review_id = $1
+  ORDER BY created_at DESC;
+  `;
+
+  return db.query(queryStr, [reviewId]).then((result) => {
+    if (result.rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "Review Id not found!" });
+    } else {
+      return result.rows;
+    }
+  });
+};
