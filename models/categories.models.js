@@ -73,3 +73,23 @@ exports.fetchReviewidComments = (reviewId) => {
     }
   });
 };
+
+exports.createComment = (username, body, reviewid) => {
+  if (isNaN(reviewid)) {
+    return Promise.reject({
+      status: 400,
+      msg: "Bad request! Review Id should be a valid number.",
+    });
+  }
+  const queryValues = [body, reviewid, username];
+  const queryStr = `
+  INSERT INTO comments
+  (body, review_id, author)
+  VALUES
+  ($1, $2, $3)
+  RETURNING *;
+  `;
+  return db.query(queryStr, queryValues).then((result) => {
+    return result.rows[0];
+  });
+};

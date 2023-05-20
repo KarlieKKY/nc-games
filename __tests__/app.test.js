@@ -220,6 +220,66 @@ describe("/api/reviews/:review_id/comments", () => {
         expect(res.body).toEqual({ msg: "Review Id not found!" });
       });
   });
+  test("POST - status: 201 - adds a new comment and responds with newly created comment", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .expect(201)
+      .send({
+        username: "philippaclaire9",
+        body: "Noob noob",
+      })
+      .then((response) => {
+        const { newComment } = response.body;
+        expect(newComment.body).toBe("Noob noob");
+        expect(newComment.review_id).toBe(1);
+        expect(newComment.author).toBe("philippaclaire9");
+        expect(newComment.comment_id).toBe(7);
+        expect(newComment.votes).toBe(0);
+        expect(typeof newComment.created_at).toBe("string");
+      });
+  });
+  test("POST - status: 400 - returns a message when review_id is not well formed", () => {
+    return request(app)
+      .post("/api/reviews/not-exists/comments")
+      .expect(400)
+      .send({
+        username: "Karlie",
+        body: "Noob Karlie",
+      })
+      .then(({ body }) => {
+        expect(body).toEqual({
+          msg: "Bad request! Review Id should be a valid number.",
+        });
+      });
+  });
+  test("POST - status: 404 - returns a message when review_id is well formd but not exists in the database", () => {
+    return request(app)
+      .post("/api/reviews/99999999/comments")
+      .expect(404)
+      .send({
+        username: "Karlie",
+        body: "Noob Karlie",
+      })
+      .then(({ body }) => {
+        expect(body).toEqual({
+          msg: "Sorry, the review id you entered is not found!",
+        });
+      });
+  });
+  test("POST - status: 404 - returns a message when the author does not exists in the database", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .expect(404)
+      .send({
+        username: "Noob",
+        body: "Nooby Karlie",
+      })
+      .then(({ body }) => {
+        expect(body).toEqual({
+          msg: "Sorry, the author you entered is not found!",
+        });
+      });
+  });
 });
 
 describe("Invalid endpoint", () => {
