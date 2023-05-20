@@ -3,7 +3,7 @@ const {
   getReviewId,
   getReviewidComments,
   postReviewidComments,
-} = require("../controllers/categories.controllers");
+} = require("../controllers/reviews.controllers");
 
 const reviewsRouter = require("express").Router();
 
@@ -13,5 +13,6 @@ reviewsRouter
   .route("/:review_id/comments")
   .get(getReviewidComments)
   .post(postReviewidComments);
+//   .patch(patchCommentsById);
 
 module.exports = reviewsRouter;
