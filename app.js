@@ -1,23 +1,14 @@
+const apiRouter = require("./routes/api-router");
+const categoriesRouter = require("./routes/categories-router");
+const reviewsRouter = require("./routes/reviews-router");
 const express = require("express");
-const {
-  getCategories,
-  getEndpoints,
-  getReviewId,
-  getReviews,
-  getReviewidComments,
-  postReviewidComments,
-} = require("./controllers/categories.controllers");
 
 const app = express();
 app.use(express.json());
 
-app.get("/api", getEndpoints);
-app.get("/api/categories", getCategories);
-app.get("/api/reviews", getReviews);
-app.get("/api/reviews/:review_id", getReviewId);
-app.get("/api/reviews/:review_id/comments", getReviewidComments);
-
-app.post("/api/reviews/:review_id/comments", postReviewidComments);
+app.use("/api", apiRouter);
+app.use("/api/categories", categoriesRouter);
+app.use("/api/reviews", reviewsRouter);
 
 app.use((err, req, res, next) => {
   if (err.code === "23503") {
