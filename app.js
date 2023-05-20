@@ -1,22 +1,26 @@
+const apiRouter = require("./routes/api-router");
+const categoriesRouter = require("./routes/categories-router");
+const reviewsRouter = require("./routes/reviews-router");
 const express = require("express");
-const {
-  getCategories,
-  getEndpoints,
-  getReviewId,
-  getReviews,
-  getReviewidComments,
-} = require("./controllers/categories.controllers");
 
 const app = express();
+app.use(express.json());
 
-app.get("/api", getEndpoints);
-app.get("/api/categories", getCategories);
-app.get("/api/reviews", getReviews);
-app.get("/api/reviews/:review_id", getReviewId);
-app.get("/api/reviews/:review_id/comments", getReviewidComments);
+app.use("/api", apiRouter);
+app.use("/api/categories", categoriesRouter);
+app.use("/api/reviews", reviewsRouter);
 
 app.use((err, req, res, next) => {
-  res.status(err.status).send({ msg: err.msg });
+  if (err.code === "23503") {
+    const isUserErr = /not present in table "users"/.test(err.detail);
+    res.status(404).send({
+      msg: `Sorry, the ${
+        isUserErr ? "author" : "review id"
+      } you entered is not found!`,
+    });
+  } else {
+    res.status(err.status).send({ msg: err.msg });
+  }
 });
 
 app.all("*", (req, res) => {
