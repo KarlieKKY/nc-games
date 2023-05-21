@@ -142,6 +142,47 @@ describe("/api/reviews/:review_id", () => {
         expect(res.body).toEqual({ msg: "Review Id not found!" });
       });
   });
+  test("PATCH - status: 200 - returns an updated votes of review object when vote is a positive number", () => {
+    return request(app)
+      .patch("/api/reviews/1")
+      .expect(200)
+      .send({
+        inc_votes: 1,
+      })
+      .then((response) => {
+        const result = {
+          review_id: 1,
+          title: "Agricola",
+          designer: "Uwe Rosenberg",
+          owner: "mallionaire",
+          review_img_url:
+            "https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700",
+          review_body: "Farmyard fun!",
+          category: "euro game",
+          created_at: "2021-01-18T10:00:20.514Z",
+          votes: 2,
+        };
+        expect(response.body.review).toEqual(result);
+      });
+  });
+  test("PATCH - status: 400 - returns a error message when review_id is not well formed", () => {
+    return request(app)
+      .patch("/api/reviews/not-a-number")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          msg: "Bad request! Review Id should be a valid number.",
+        });
+      });
+  });
+  test("PATCH - status: 404 - returns a error message when review_id is well formed but not exisis in the database", () => {
+    return request(app)
+      .patch("/api/reviews/999999999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Review Id not found!" });
+      });
+  });
 });
 
 describe("/api/reviews/:review_id/comments", () => {

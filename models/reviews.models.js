@@ -5,7 +5,7 @@ exports.fetchReviewId = (id) => {
     return Promise.reject({ status: 400, msg: "Bad request!" });
   }
 
-  const queryStr = `SELECT * FROM reviews WHERE review_id = $1`;
+  const queryStr = `SELECT * FROM reviews WHERE review_id = $1;`;
 
   return db.query(queryStr, [id]).then((result) => {
     if (result.rows.length === 0) {
@@ -75,5 +75,29 @@ exports.createComment = (username, body, reviewid) => {
     `;
   return db.query(queryStr, queryValues).then((result) => {
     return result.rows[0];
+  });
+};
+
+exports.updateVotesByReviewid = (reviewId, addVotes) => {
+  if (isNaN(reviewId)) {
+    return Promise.reject({
+      status: 400,
+      msg: "Bad request! Review Id should be a valid number.",
+    });
+  }
+  const queryStr = `
+      UPDATE reviews
+      SET
+          votes = votes + $1
+      WHERE
+          review_id = $2
+        RETURNING *;
+      `;
+  return db.query(queryStr, [addVotes, reviewId]).then((result) => {
+    if (result.rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "Review Id not found!" });
+    } else {
+      return result.rows[0];
+    }
   });
 };
