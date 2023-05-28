@@ -323,6 +323,30 @@ describe("/api/reviews/:review_id/comments", () => {
   });
 });
 
+describe("/api/comments/:comment_id", () => {
+  test("DELETE - status: 204 - delete the given comment by comment_id from the database and respond with a 204 No Content status", () => {
+    return request(app).delete("/api/comments/1").expect(204);
+  });
+  test("DELETE - status: 400 - returns a message when comment_id is not well formed", () => {
+    return request(app)
+      .delete("/api/comments/idIsString")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toEqual(
+          "Bad request! Comment Id should be a valid number."
+        );
+      });
+  });
+  test("DELETE - status: 404 - returns a message when comment_id is well formed but not exists in the database", () => {
+    return request(app)
+      .delete("/api/comments/9999999999999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toEqual("Comment Id not found!");
+      });
+  });
+});
+
 describe("Invalid endpoint", () => {
   test("GET - status: 404 - invalid input throw error", () => {
     return request(app)
