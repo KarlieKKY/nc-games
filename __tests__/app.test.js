@@ -169,7 +169,6 @@ describe("/api/reviews", () => {
     const { body } = await request(app)
       .get("/api/reviews?category=nonsense")
       .expect(404);
-    console.log(body);
     expect(body).toEqual({ msg: "category name not found!" });
   });
 });
