@@ -2,6 +2,7 @@ const apiRouter = require("./routes/api-router");
 const categoriesRouter = require("./routes/categories-router");
 const commentsRouter = require("./routes/comments-router");
 const reviewsRouter = require("./routes/reviews-router");
+const usersRouter = require("./routes/users-router");
 const express = require("express");
 
 const app = express();
@@ -11,6 +12,7 @@ app.use("/api", apiRouter);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/reviews", reviewsRouter);
 app.use("/api/comments", commentsRouter);
+app.use("/api/users", usersRouter);
 
 app.use((err, req, res, next) => {
   if (err.code === "23503") {
