@@ -190,11 +190,12 @@ describe("/api/reviews/:review_id", () => {
           category: "euro game",
           created_at: "2021-01-18T10:00:20.514Z",
           votes: 1,
+          comment_count: "0",
         };
         expect(body.review).toEqual(result);
       });
   });
-  test("GET - status : 400 - return a message when review is not well formed", () => {
+  test("GET - status: 400 - return a message when review is not well formed", () => {
     return request(app)
       .get("/api/reviews/nonsense")
       .expect(400)
