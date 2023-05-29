@@ -16,23 +16,48 @@ exports.fetchReviewId = (id) => {
   });
 };
 
-exports.fetchReviews = () => {
-  const queryStr = `
+exports.fetchReviews = (category, sort_by = "created_at", order = "DESC") => {
+  const validSortQueries = [
+    "created_at",
+    "owner",
+    "review_id",
+    "title",
+    "category",
+    "designer",
+    "review_img_url",
+    "votes",
+    "comment_count",
+  ];
+  if (!validSortQueries.includes(sort_by)) {
+    return Promise.reject({ status: 400, msg: "invalid sort query!" });
+  }
+
+  const queryValues = [];
+
+  let queryStr = `
     SELECT reviews.* , count(comments.comment_id) AS comment_count 
     FROM reviews 
     JOIN comments 
     ON reviews.review_id = comments.review_id
-    GROUP BY reviews.review_id
-    ORDER BY created_at DESC;
     `;
 
-  return db.query(queryStr).then((result) => {
-    const formattedData = result.rows.map((obj) => {
-      delete obj.review_body;
-      return obj;
-    });
+  if (category) {
+    queryStr += ` WHERE reviews.category = $1`;
+    queryValues.push(category);
+  }
 
-    return formattedData;
+  queryStr += ` GROUP BY reviews.review_id ORDER BY ${sort_by} ${order};`;
+
+  return db.query(queryStr, queryValues).then((result) => {
+    if (result.rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "category name not found!" });
+    } else {
+      const formattedData = result.rows.map((obj) => {
+        delete obj.review_body;
+        return obj;
+      });
+      return formattedData;
+    }
   });
 };
 
