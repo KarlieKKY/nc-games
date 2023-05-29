@@ -72,6 +72,23 @@ describe("/api/categories", () => {
   });
 });
 
+describe("/api/users", () => {
+  test("GET - status: 200 - returns an array of user objects and each object has corresponding properties", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.users.length).toBe(4);
+        expect(Array.isArray(body.users)).toBe(true);
+        body.users.forEach((user) => {
+          expect(typeof user.username).toBe("string");
+          expect(typeof user.name).toBe("string");
+          expect(typeof user.avatar_url).toBe("string");
+        });
+      });
+  });
+});
+
 describe("/api/reviews", () => {
   test("GET - status: 200 - returns a reviews array of review object, each of which should have the corresponding properties", () => {
     return request(app)
