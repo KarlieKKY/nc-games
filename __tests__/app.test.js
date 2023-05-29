@@ -120,6 +120,57 @@ describe("/api/reviews", () => {
         });
       });
   });
+  test("GET - status: 200 - returns reviews query sorted by category", () => {
+    return request(app)
+      .get("/api/reviews?category=dexterity")
+      .expect(200)
+      .then(({ body }) => {
+        body.reviews.forEach((review) => {
+          expect(review.category).toBe("dexterity", {
+            descending: true,
+          });
+        });
+      });
+  });
+  const validSort = [
+    "created_at",
+    "owner",
+    "review_id",
+    "title",
+    "category",
+    "designer",
+    "review_img_url",
+    "votes",
+    "comment_count",
+  ];
+  validSort.forEach((sort_by) => {
+    test(`GET - status: 200 - return reviews that sorted by ${sort_by}`, async () => {
+      const { body } = await request(app)
+        .get(`/api/reviews?sort_by=${sort_by}`)
+        .expect(200);
+      expect(body.reviews).toBeSortedBy(sort_by, {
+        descending: true,
+      });
+    });
+  });
+  test("GET - status: 200 - returns reviews in ascending order", async () => {
+    const { body } = await request(app)
+      .get("/api/reviews?order=asc")
+      .expect(200);
+    expect(body.reviews).toBeSortedBy("created_at");
+  });
+  test("GET - status: 400 - returns error when input sort_by is invalid", async () => {
+    const { body } = await request(app)
+      .get("/api/reviews?sort_by=nonsense")
+      .expect(400);
+    expect(body).toEqual({ msg: "invalid sort query!" });
+  });
+  test("GET - status: 404 - returns error when category name is invalid", async () => {
+    const { body } = await request(app)
+      .get("/api/reviews?category=nonsense")
+      .expect(404);
+    expect(body).toEqual({ msg: "category name not found!" });
+  });
 });
 
 describe("/api/reviews/:review_id", () => {
