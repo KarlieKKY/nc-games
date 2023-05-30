@@ -4,9 +4,10 @@ const commentsRouter = require("./routes/comments-router");
 const reviewsRouter = require("./routes/reviews-router");
 const usersRouter = require("./routes/users-router");
 const express = require("express");
-
+const cors = require("cors");
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 app.use("/api", apiRouter);
 app.use("/api/categories", categoriesRouter);
