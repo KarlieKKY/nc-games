@@ -89,6 +89,24 @@ describe("/api/users", () => {
   });
 });
 
+describe("/api/users/:username", () => {
+  test("GET - status: 200 - returns a user object which should have corresponding propertites", async () => {
+    const { body } = await request(app)
+      .get("/api/users/mallionaire")
+      .expect(200);
+    expect(body.username).toEqual({
+      username: "mallionaire",
+      name: "haz",
+      avatar_url:
+        "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+    });
+  });
+  test("GET - status: 404 - returns a message when username is not exist in the database", async () => {
+    const { body } = await request(app).get("/api/users/nonsense").expect(404);
+    expect(body.msg).toEqual("Username not found!");
+  });
+});
+
 describe("/api/reviews", () => {
   test("GET - status: 200 - returns a reviews array of review object, each of which should have the corresponding properties", () => {
     return request(app)
