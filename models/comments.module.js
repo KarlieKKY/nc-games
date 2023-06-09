@@ -13,7 +13,5 @@ exports.removeCommentByCommentid = (id) => {
     RETURNING *;
     `;
 
-  return db.query(queryStr, [id]).then((result) => {
-    return result.rows[0];
-  });
+  return db.query(queryStr, [id]);
 };
