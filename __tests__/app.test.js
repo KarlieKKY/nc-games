@@ -411,6 +411,54 @@ describe("/api/reviews/:review_id/comments", () => {
 });
 
 describe("/api/comments/:comment_id", () => {
+  test("PATCH - status: 200 - returns an updated object of comment by comment id when votes is positive number", async () => {
+    const { body } = await request(app)
+      .patch("/api/comments/2")
+      .expect(200)
+      .send({
+        inc_votes: 1,
+      });
+    expect(body.updatedComment).toEqual({
+      author: "mallionaire",
+      body: "My dog loved this game too!",
+      comment_id: 2,
+      created_at: "2021-01-18T10:09:05.410Z",
+      review_id: 3,
+      votes: 14,
+    });
+  });
+  test("PATCH - status: 200 - returns an updated object of comment by comment id when votes is negative number", async () => {
+    const { body } = await request(app)
+      .patch("/api/comments/2")
+      .expect(200)
+      .send({
+        inc_votes: -1,
+      });
+    expect(body.updatedComment).toEqual({
+      author: "mallionaire",
+      body: "My dog loved this game too!",
+      comment_id: 2,
+      created_at: "2021-01-18T10:09:05.410Z",
+      review_id: 3,
+      votes: 12,
+    });
+  });
+  test("PATCH - status: 400 - returns a error message when comment_id is not well formed", async () => {
+    const { body } = await request(app)
+      .patch("/api/comments/not-a-number")
+      .expect(400);
+    expect(body).toEqual({
+      msg: "Bad request! Comment Id should be a valid number.",
+    });
+  });
+  test("PATCH - status: 400 - returns a error message when comment_id is well formed but not exisis in the database", async () => {
+    const { body } = await request(app)
+      .patch("/api/comments/999999999")
+      .expect(404);
+    expect(body).toEqual({
+      msg: "Comment Id not found!",
+    });
+  });
   test("DELETE - status: 204 - delete the given comment by comment_id from the database and respond with a 204 No Content status", () => {
     return request(app).delete("/api/comments/1").expect(204);
   });
