@@ -189,6 +189,47 @@ describe("/api/reviews", () => {
       .expect(404);
     expect(body).toEqual({ msg: "category name not found!" });
   });
+  test("POST - status: 201 - returns an object with the corresponding properties", async () => {
+    const { body } = await request(app)
+      .post("/api/reviews")
+      .send({
+        title: "Hello Testing",
+        designer: "Karlie *w*",
+        owner: "mallionaire",
+        review_body: "Griding!",
+        category: "euro game",
+        review_img_url:
+          "https://w7.pngwing.com/pngs/5/1020/png-transparent-peppa-entertainment-one-animated-cartoon-peppa-pig-miscellaneous-television-child-thumbnail.png",
+      })
+      .expect(201);
+    expect(body.newReview.review_id).toBe(14);
+    expect(body.newReview.title).toBe("Hello Testing");
+    expect(body.newReview.category).toBe("euro game");
+    expect(body.newReview.designer).toBe("Karlie *w*");
+    expect(body.newReview.owner).toBe("mallionaire");
+    expect(body.newReview.review_body).toBe("Griding!");
+    expect(body.newReview.review_img_url).toBe(
+      "https://w7.pngwing.com/pngs/5/1020/png-transparent-peppa-entertainment-one-animated-cartoon-peppa-pig-miscellaneous-television-child-thumbnail.png"
+    );
+    expect(typeof body.newReview.created_at).toBe("string");
+    expect(body.newReview.votes).toBe(0);
+    expect(body.newReview.comment_count).toBe("0");
+  });
+  test("POST - status: 201 - returns default image url when user not input a review_img_url", async () => {
+    const { body } = await request(app)
+      .post("/api/reviews")
+      .send({
+        title: "Hello Testing",
+        designer: "Karlie *w*",
+        owner: "mallionaire",
+        review_body: "Griding!",
+        category: "euro game",
+      })
+      .expect(201);
+    expect(body.newReview.review_img_url).toBe(
+      "https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg?w=700&h=700"
+    );
+  });
 });
 
 describe("/api/reviews/:review_id", () => {

@@ -133,3 +133,48 @@ exports.updateVotesByReviewid = (reviewId, addVotes) => {
     }
   });
 };
+
+exports.createNewReview = async (review) => {
+  const { owner, title, review_body, designer, review_img_url, category } =
+    review;
+
+  const queryValues = [title, designer, owner, review_body, category];
+  let queryStr = `
+  WITH new_review AS (
+  INSERT INTO
+    reviews
+      (title, designer, owner, review_body, category`;
+  let queryInsertValue = " VALUES ($1, $2, $3, $4, $5";
+
+  if (review_img_url && review_img_url.trim() !== "") {
+    queryStr += ", review_img_url";
+    queryValues.push(review_img_url);
+    queryInsertValue += ", $6";
+  }
+
+  queryStr += ")";
+  queryInsertValue += ")";
+
+  queryStr += queryInsertValue;
+
+  queryStr += ` RETURNING *),
+  comment_count_table AS (
+    SELECT 
+      review_id, COUNT(*) AS comment_count
+    FROM 
+      comments
+    GROUP BY 
+      review_id
+  )
+  SELECT 
+    new_review.*, COALESCE(comment_count_table.comment_count, 0) as comment_count
+  FROM 
+    new_review
+  LEFT JOIN 
+    comment_count_table 
+  ON 
+    new_review.review_id = comment_count_table.review_id;`;
+
+  const result = await db.query(queryStr, queryValues);
+  return result.rows[0];
+};
