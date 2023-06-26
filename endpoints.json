@@ -27,6 +27,15 @@
       ]
     }
   },
+  "GET /api/users/:username": {
+    "description": "serves an object by username",
+    "queries": ["username"],
+    "exampleResponse": {
+      "username": "mallionaire",
+      "name": "haz",
+      "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+    }
+  },
   "GET /api/reviews": {
     "description": "serves an array of all reviews",
     "queries": ["category", "sort_by", "order"],
@@ -111,7 +120,12 @@
   },
   "PATCH /api/reviews/:review_id": {
     "description": "add votes number to the reviews's votes by review_id",
-    "queries": ["review_id", "votes"],
+    "queries": [
+      "review_id",
+      {
+        "inc_votes": "a-number"
+      }
+    ],
     "exampleResponse": {
       "review": {
         "review_id": 1,
@@ -122,8 +136,25 @@
         "review_body": "Farmyard fun!",
         "category": "euro game",
         "created_at": "2021-01-18T10:00:20.514Z",
-        "votes": 2
+        "votes": "updated-votes"
       }
+    }
+  },
+  "PATCH /api/comments/:comment_id": {
+    "description": "update comment by given comment id",
+    "queries": [
+      "comment_id",
+      {
+        "inc_votes": "a-number"
+      }
+    ],
+    "exampleResponse": {
+      "author": "mallionaire",
+      "body": "My dog loved this game too!",
+      "comment_id": 2,
+      "created_at": "2021-01-18T10:09:05.410Z",
+      "review_id": 3,
+      "votes": "updated-votes"
     }
   },
   "DELETE /api/comments/:comment_id": {
