@@ -17,4 +17,4 @@ jobs:
           node-version: ${{matrix.node}}
 
       - run: npm install
-      - run: nom test
+      - run: npm test
